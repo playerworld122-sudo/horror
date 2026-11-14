@@ -51,7 +51,29 @@ html,body{touch-action:none;overscroll-behavior:none}
 #msg{position:fixed;top:28%;width:100%;text-align:center;font-size:28px;letter-spacing:.25em;color:#d33;z-index:9;opacity:0;transition:opacity .6s;text-shadow:0 0 18px #000;pointer-events:none}
 #pause{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:8;font-size:20px;letter-spacing:.3em;background:#0008;cursor:pointer}
 #end{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:30;background:#000e;text-align:center}
+
+html,body{height:100%;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#ui,.scr,#rl{touch-action:pan-y}
+.scr{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.t .scr{justify-content:flex-start;padding:max(14px,env(safe-area-inset-top)) max(5vw,env(safe-area-inset-right)) 70px max(5vw,env(safe-area-inset-left))}
+.t h1.t{font-size:clamp(40px,11vw,72px);margin-top:4px}
+.t .sub{letter-spacing:.3em;margin:0 0 12px;font-size:12px}
+.t h2{font-size:20px;margin:0 0 8px}
+.t .b{font-size:18px;padding:13px 18px;min-height:48px;width:min(420px,90vw)}
+.t .b:hover{padding-left:22px}
+.t .in{font-size:16px;padding:12px 14px;width:min(420px,90vw)}
+.t .cards{flex-direction:column;gap:10px}.t .card{width:min(420px,90vw);padding:16px 18px}.t .card:hover{transform:none}
+.t label.sl{width:min(420px,90vw)}.t .ks{font-size:14px;line-height:1.7}
+.t #hud{font-size:12px;left:max(10px,env(safe-area-inset-left));top:8px}.t #bb,.t #bar{width:110px}
+.t #log{left:10px;top:76px;bottom:auto;width:52vw;font-size:12px}
+.t #ci{bottom:auto;top:8px;left:10px;width:calc(100vw - 20px);font-size:16px;letter-spacing:.05em}
+.tb{width:68px;height:68px;font-size:15px;opacity:.9}
+#jh{position:absolute;left:calc(36px + env(safe-area-inset-left));bottom:36px;width:130px;height:130px;border-radius:50%;border:2px dashed #667a;opacity:.35;pointer-events:none}
+#jb{width:140px;height:140px}
+#rot{position:fixed;inset:0;z-index:999;background:#000;color:#cfd6ea;display:none;align-items:center;justify-content:center;text-align:center;font-size:20px;letter-spacing:.15em;padding:30px}
+@media (orientation:portrait) and (pointer:coarse){#rot{display:flex}}
 </style></head><body>
+<div id="rot">Поверни телефон горизонтально ⟳</div>
 <canvas id="c"></canvas>
 <div id="vig"></div><div id="red"></div><canvas id="gr" width="160" height="90"></canvas><div id="fl"></div>
 <div id="ui">
@@ -74,19 +96,20 @@ html,body{touch-action:none;overscroll-behavior:none}
   <label class="sl">Зернистость плёнки<input type="range" id="o-grain" min="0" max=".25" step=".01" value=".08"></label>
   <label class="sl">Сложность<select class="in" id="o-diff" style="font-size:15px"><option value="1">Выживание</option><option value="1.25">Кошмар</option></select></label>
   <label class="sl">Качество графики<select class="in" id="o-q" style="font-size:15px"><option value="1.5">Высокое</option><option value="1">Среднее</option><option value=".7">Низкое</option></select></label>
-  <label class="sl" style="display:block;margin:10px 0">Режим VPN (все данные через ретранслятор)<input type="checkbox" id="o-vpn" style="margin-left:10px" checked></label><label class="sl" style="display:block;margin:10px 0">Свой TURN (необязательно): <input id="o-turn" placeholder="turn:хост:443?transport=tcp|логин|пароль" style="width:100%;margin-top:6px;font-size:13px"></label><button class="b s" onclick="applySet();go('s-title')">← Сохранить</button></div>
+  <label class="sl" style="display:block;margin:10px 0">Сразу через сервер связи (если играешь с VPN)<input type="checkbox" id="o-vpn" style="margin-left:10px"></label><label class="sl" style="display:block;margin:10px 0">Свой TURN (необязательно): <input id="o-turn" placeholder="turn:хост:443?transport=tcp|логин|пароль" style="width:100%;margin-top:6px;font-size:13px"></label><button class="b s" onclick="applySet();go('s-title')">← Сохранить</button></div>
  <div class="scr" id="s-how"><h2>Как выжить</h2><div class="ks"><b>WASD</b>ходьба &nbsp; <b>SHIFT</b>бег<br><b>F</b>фонарь &nbsp; <b>C</b>красться &nbsp; <b>M</b>микрофон &nbsp; <b>ENTER</b>чат<br><br>Найди 5 предохранителей — они тускло светятся голубым. Загляни в склад и в трубы.<br>Затем беги к воротам на краю территории.<br>Векчик не проходит сквозь стены, не лезет в трубы и не заходит в сторожку (там оберег), но ждёт у входа.<br>Лестницы на контейнерах: подойди и иди вперёд, вниз — назад. Наверху добыча, а на высоту 2 этажей он не достаёт.<br>На телефоне: левая часть экрана — стик ходьбы (потяни до края — бег), правая — осмотр, кнопки справа внизу.<br><br>Векчик слышит бег и свет фонаря. Крадись (C) — и он потеряет след.<br>Каждый предохранитель его привлекает. Ищи жёлтые батарейки.<br>Пока смотришь на него — он почти замирает. Не моргай.</div>
   <button class="b s" onclick="go('s-title')">← Назад</button></div>
-<p id="st" style="position:absolute;left:8vw;bottom:5vh;margin:0"></p></div>
+<button class="b s" id="bCancel" style="display:none;position:absolute;left:8vw;bottom:9vh" onclick="location.reload()">✕ Отмена</button><p id="st" style="position:absolute;left:8vw;bottom:5vh;margin:0;background:#000a;padding:2px 6px"></p></div>
 <div id="ld"><div id="lt"></div><div id="lb"><i></i></div></div>
 <div id="hud"></div><div id="log"></div><input class="in" id="ci" maxlength="120" placeholder="Сообщение... (Enter)">
 <div id="msg"></div>
 <div id="tc"><div id="jb"><i id="jk"></i></div>
-<div class="tb" id="bS" style="right:24px;bottom:34px;width:74px;height:74px">БЕГ</div>
-<div class="tb" id="bF" style="right:112px;bottom:42px">🔦</div>
-<div class="tb" id="bC" style="right:32px;bottom:124px">▼</div>
-<div class="tb" id="bM" style="right:80px;top:14px;width:46px;height:46px">🎤</div>
-<div class="tb" id="bT" style="right:16px;top:14px;width:46px;height:46px;display:none">💬</div></div><div id="pause">КЛИКНИ, ЧТОБЫ ИГРАТЬ</div>
+<div id="jh"></div>
+<div class="tb" id="bS" style="right:calc(26px + env(safe-area-inset-right));bottom:30px;width:88px;height:88px">БЕГ</div>
+<div class="tb" id="bC" style="right:calc(128px + env(safe-area-inset-right));bottom:38px">▼</div>
+<div class="tb" id="bF" style="right:calc(38px + env(safe-area-inset-right));bottom:132px">🔦</div>
+<div class="tb" id="bM" style="right:calc(92px + env(safe-area-inset-right));top:12px;width:54px;height:54px">🎤</div>
+<div class="tb" id="bT" style="right:calc(26px + env(safe-area-inset-right));top:12px;width:54px;height:54px;display:none">💬</div></div><div id="pause">КЛИКНИ, ЧТОБЫ ИГРАТЬ</div>
 <div id="end"><h1 class="t" id="et" data-t=""></h1><p class="sub" id="es"></p><button class="b" onclick="location.reload()">В меню</button></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -100,7 +123,7 @@ const TOUCH=matchMedia("(pointer:coarse)").matches||navigator.maxTouchPoints>0,T
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),hash=s=>{let h=0;for(const c of s)h=h*31+c.charCodeAt(0)|0;return Math.abs(h)};
 function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let a=Math.imul(s^s>>>15,1|s);a=a+Math.imul(a^a>>>7,61|a)^a;return((a^a>>>14)>>>0)/4294967296}}
 const go=id=>document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',e.id==id));
-function applySet(){set.sens=+$('o-sens').value;set.vol=+$('o-vol').value;set.grain=+$('o-grain').value;set.q=+$('o-q').value;set.diff=+$('o-diff').value;R.setPixelRatio(Math.min(devicePixelRatio,set.q));$('gr').style.opacity=set.grain;if(master)master.gain.value=set.vol;arS=null;try{localStorage.setItem('vk_vpn',$('o-vpn').checked?'1':'0');localStorage.setItem('vk_turn',$('o-turn').value.trim())}catch(e){}}
+function applySet(){set.sens=+$('o-sens').value;set.vol=+$('o-vol').value;set.grain=+$('o-grain').value;set.q=+$('o-q').value;set.diff=+$('o-diff').value;R.setPixelRatio(Math.min(devicePixelRatio,set.q));$('gr').style.opacity=set.grain;if(master)master.gain.value=set.vol;arS=null;try{localStorage.setItem('vk_vpn3',$('o-vpn').checked?'1':'0');localStorage.setItem('vk_turn',$('o-turn').value.trim())}catch(e){}}
 const box=(w,h,d,m,x,y,z,p)=>{const g=new THREE.BoxGeometry(w,h,d);if(m.map&&m.userData.ts){const ts=m.userData.ts,u=g.attributes.uv,f=[[d,h],[d,h],[w,d],[w,d],[w,h],[w,h]];for(let i=0;i<24;i++){const F=f[i>>2];u.setXY(i,u.getX(i)*F[0]/ts,u.getY(i)*F[1]/ts)}}const o=new THREE.Mesh(g,m);o.position.set(x,y,z);(p||scene).add(o);return o};
 /* ---------- процедурные текстуры (цвет + рельеф + шероховатость) ---------- */
 let sky=null,blink=[];
@@ -552,7 +575,7 @@ function hud(){const mc=mic&&!mic.silent&&mic.getAudioTracks()[0]&&mic.getAudioT
 function startGame(seed){$('ld').classList.add('on');$('lt').textContent=TIPS[Math.random()*TIPS.length|0];$('lb').innerHTML='<i></i>';name=$('nm').value.trim()||'Игрок';audio();
  setTimeout(()=>{build(seed);const a=rng(seed+7)()*6.28;me={x:0,z:0,ry:0,pitch:0,hp:3,stam:1,bob:0,dead:0,tired:0,flash:1,bat:1,cr:0,h:1.6,q:8,y:0,vy:0,climb:0};spawnPt();me.ry=Math.PI;taken=0;M={x:Math.cos(a)*60,z:Math.sin(a)*60,r:0,stun:20,s:0,tx:0,tz:0,hunt:0,al:0,lg:0,lc:6,lt:0};[M.x,M.z]=snap(M.x,M.z);
   $('ui').style.display='none';$('ld').classList.remove('on');$('hud').style.display='block';if(online)$('log').style.display='block';playing=true;hud();
-  if(pending)pending.forEach(i=>takeItem(i,0));toast('Найди 5 предохранителей',3500);$('pause').style.display=TOUCH?'none':'flex';if(TOUCH){locked=true;$('tc').style.display='block';$('bF').classList.add('on');$('bT').style.display=online?'flex':'none';$('bM').style.display=online?'flex':'none'}},1600)}
+  if(pending)pending.forEach(i=>takeItem(i,0));toast('Найди 5 предохранителей',3500);$('pause').style.display=TOUCH?'none':'flex';if(TOUCH){locked=true;try{navigator.wakeLock&&navigator.wakeLock.request('screen').catch(()=>{})}catch(e){}$('tc').style.display='block';$('bF').classList.add('on');$('bT').style.display=online?'flex':'none';$('bM').style.display=online?'flex':'none'}},1600)}
 /* ---------- loop ---------- */
 function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05);t+=dt;playing?update(dt):menuCam();adaptRes(dt);if(sky)sky.position.set(cam.position.x,0,cam.position.z);const bl=Math.sin(t*2.2)>.55;blink.forEach(q=>q.visible=bl);R.render(scene,cam)}
 function menuCam(){cam.position.set(Math.sin(t*.12)*1.5,1.7,22);cam.rotation.set(0,Math.sin(t*.08)*.12,0);cam.fov=75;cam.updateProjectionMatrix();
@@ -615,14 +638,57 @@ const ICEBASE=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.
  {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},
  {urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'},{urls:'turns:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}];
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
-const VPN=()=>lsGet('vk_vpn')!=='0';let forceRelay=false,forceDirect=false;
+const VPN=()=>lsGet('vk_vpn3')==='1';let forceRelay=false,forceDirect=false;
 function mkICE(relay){const l=ICEBASE.slice(),c=(lsGet('vk_turn')||'').split('|');if(c[0]&&c[0].indexOf('turn')==0)l.unshift({urls:c[0].split(','),username:c[1]||'',credential:c[2]||''});
  return{debug:1,config:{iceServers:l,iceCandidatePoolSize:relay?0:10,iceTransportPolicy:relay?'relay':'all'}}}
 try{$('o-vpn').checked=VPN();$('o-turn').value=lsGet('vk_turn')||''}catch(e){}
 let started=0,playSeed=0,roster=[],roomCode='',got=0,advT=null,advD=null,joinT=null,listBusy=0,roomName='',micP=Promise.resolve(),micStarted=0;
-const setSt=s=>{$('st').textContent=s};
+let stBase='',stT0=0;const PRG=/Подключ|Создан|Вход|пробуем|Пробуем|повтор|Нет связи|Код занят|отвечает|восстанавл/;
+const setSt=s=>{stBase=s;stT0=Date.now();$('st').textContent=s;const c=$('bCancel');if(c)c.style.display=PRG.test(s)?'block':'none'};
+setInterval(()=>{if(stBase&&PRG.test(stBase)&&online&&!playing&&!got&&!(isHost&&peer&&peer._opened))$('st').textContent=stBase+' · '+((Date.now()-stT0)/1000|0)+' с'},1000);
 function newCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<4;i++)s+=A[Math.random()*A.length|0];return s}
-function killPeer(){clearTimeout(joinT);if(advT){clearInterval(advT);advT=null}try{if(peer)peer.destroy()}catch(e){}peer=null;conns={};for(const id in calls){try{calls[id].close()}catch(e){}}calls={}}
+function killPeer(){clearTimeout(joinT);if(advT){clearInterval(advT);advT=null}mqStop();xport='';mqWant=0;hostReadyF=0;try{if(peer)peer.destroy()}catch(e){}peer=null;conns={};for(const id in calls){try{calls[id].close()}catch(e){}}calls={}}
+/* ---------- запасной канал: MQTT поверх WebSocket (работает через VPN, без WebRTC) ---------- */
+const MQURLS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://mqtt.eclipseprojects.io/mqtt','wss://test.mosquitto.org:8081/'];
+let mq=null,mqId='',MQT='',xport='',mqHB=null,mqHiT=null,mqFail=null,mqWant=0,hostReadyF=0;const mqSeen={};
+function mqOpen(topic,onMsg,onUp){
+ const st={ok:0,dead:0,ws:null,bi:0,ping:null},td=new TextDecoder(),te=new TextEncoder();
+ const enc=s=>Array.from(te.encode(s)),str=s=>{const b=enc(s);return[b.length>>8,b.length&255].concat(b)};
+ const vl=n=>{const a=[];do{let d=n%128;n=Math.floor(n/128);if(n>0)d|=128;a.push(d)}while(n>0);return a};
+ const pk=(h,b)=>new Uint8Array([h].concat(vl(b.length),b));
+ const raw=u=>{try{if(st.ws&&st.ws.readyState===1)st.ws.send(u)}catch(e){}};
+ st.pub=(t,s)=>raw(pk(0x30,str(t).concat(enc(s))));
+ st.close=()=>{st.dead=1;clearInterval(st.ping);try{raw(new Uint8Array([0xE0,0]));st.ws.close()}catch(e){}};
+ const conn=()=>{if(st.dead)return;let ws;try{ws=new WebSocket(MQURLS[st.bi%MQURLS.length],'mqtt')}catch(e){st.bi++;setTimeout(conn,800);return}
+  st.ws=ws;ws.binaryType='arraybuffer';let buf=new Uint8Array(0);const to=setTimeout(()=>{if(!st.ok){try{ws.close()}catch(e){}}},6000);
+  ws.onopen=()=>raw(pk(0x10,str('MQTT').concat([4,2,0,30],str('vk'+Math.random().toString(36).slice(2,10)))));
+  ws.onmessage=ev=>{const n=new Uint8Array(ev.data),m=new Uint8Array(buf.length+n.length);m.set(buf);m.set(n,buf.length);buf=m;
+   for(;;){if(buf.length<2)break;let i=1,len=0,mul=1,k=0,b,ok2=0;while(i<buf.length){b=buf[i++];len+=(b&127)*mul;mul*=128;if(!(b&128)){ok2=1;break}if(++k>3)break}
+    if(!ok2||buf.length<i+len)break;const h=buf[0],type=h>>4,body=buf.slice(i,i+len);buf=buf.slice(i+len);
+    if(type==2){if(body[1]===0){st.ok=1;clearTimeout(to);raw(pk(0x82,[0,1].concat(str(topic),[0])));clearInterval(st.ping);st.ping=setInterval(()=>raw(new Uint8Array([0xC0,0])),20000);onUp(1)}else{try{ws.close()}catch(e){}}}
+    else if(type==3){const tl=(body[0]<<8)|body[1];let off=2+tl;if((h>>1)&3)off+=2;try{onMsg(td.decode(body.slice(2,2+tl)),td.decode(body.slice(off)))}catch(e){console.warn('[MQ] msg',e)}}}};
+  ws.onclose=()=>{clearTimeout(to);clearInterval(st.ping);const was=st.ok;st.ok=0;if(was)onUp(0);if(!st.dead){st.bi++;setTimeout(conn,1500)}};ws.onerror=()=>{}};
+ conn();return st}
+function mqPub(to,d){if(mq&&mq.ok)mq.pub(MQT,JSON.stringify({f:mqId,t:to,d:d}))}
+const mqConn=id=>({peer:id,open:true,mq:1,send:d=>mqPub(id,d),close(){}});
+function mqStart(){if(mq||!roomCode)return;MQT='vekchik/v1/'+roomCode;mqId=isHost?PRE+roomCode:'m'+Math.random().toString(36).slice(2,9);
+ mq=mqOpen(MQT,mqMsg,up=>{if(!mq)return;if(up){if(isHost)hostReady(PRE+roomCode);else if(mqWant)mqHello()}});
+ clearInterval(mqHB);mqHB=setInterval(mqBeat,2000)}
+function mqStop(){if(mq){try{mq.close()}catch(e){}mq=null}clearInterval(mqHB);mqHB=null;clearInterval(mqHiT);mqHiT=null;clearTimeout(mqFail)}
+function mqHello(){if(xport==='p'||isHost)return;mqWant=1;if(!mq||!mq.ok)return;if(xport==='m')return;
+ xport='m';myId=mqId;const hid=PRE+roomCode,c=conns[hid];if(c&&!c.mq){try{c.close()}catch(e){}}conns[hid]=mqConn(hid);
+ const pr=peer;peer=null;try{if(pr)pr.destroy()}catch(e){}
+ setSt('Подключение через сервер...');const hi=()=>mqPub(hid,{t:'hi',n:name});hi();clearInterval(mqHiT);mqHiT=setInterval(()=>{if(got){clearInterval(mqHiT);return}hi()},2000);
+ clearTimeout(mqFail);mqFail=setTimeout(()=>{if(!got&&!playing){setSt('Комната '+roomCode+' не найдена (хост должен быть онлайн) или сервер связи недоступен.');online=false;mqStop()}},15000)}
+function mqMsg(topic,txt){let m;try{m=JSON.parse(txt)}catch(e){return}if(!m||m.f===mqId||(m.t&&m.t!==mqId)||!m.d)return;
+ const from=m.f;mqSeen[from]=Date.now();
+ if(isHost){if(!conns[from]){if(Object.keys(conns).length>=5){mqPub(from,{t:'full'});return}conns[from]=mqConn(from)}}
+ else{if(xport!=='m'||from!==PRE+roomCode)return}
+ onData(from,m.d)}
+function mqBeat(){const now=Date.now();
+ if(isHost){for(const id of Object.keys(conns)){if(conns[id].mq&&now-(mqSeen[id]||now)>10000){delete conns[id];roster=roster.filter(p=>p.id!==id);bcastLobby();send({t:'left',id:id});dropRemote(id)}}if(Object.keys(conns).length)send({t:'ping'})}
+ else if(xport==='m'){mqPub(PRE+roomCode,{t:'ping'});const hs=mqSeen[PRE+roomCode];if(got&&hs&&now-hs>12000){alert('Связь с хостом потеряна');location.reload()}}}
+function hostReady(id){if(hostReadyF)return;hostReadyF=1;myId=id;roster=[{id:id,n:name,h:1}];go('s-lobby');renderLobby();setSt('');startAdv()}
 function dropRemote(id){const p=rem[id];if(p){scene.remove(p.mesh);delete rem[id]}if(calls[id]){try{calls[id].close()}catch(e){}delete calls[id]}const a=rau[id];if(a){try{a.pause();a.srcObject=null}catch(e){}delete rau[id]}if(playing)hud()}
 function onData(from,d){
  if(!d||typeof d!=='object')return;
@@ -662,36 +728,39 @@ function renderLobby(){const L=$('pl');L.textContent='';roster.forEach(p=>{const
  $('lc').textContent='КОМНАТА '+roomCode+' · '+roster.length+'/6';$('bGo').style.display=isHost?'block':'none';$('lw').textContent=isHost?'Поделись кодом или найди комнату в списке серверов. Начни игру, когда все на месте.':'Ждём, пока хост начнёт игру...'}
 function bcastLobby(){renderLobby();send({t:'lob',list:roster});advSoon()}
 function hostStart(){if(started)return;started=1;playSeed=Math.random()*1e9|0;send({t:'init',seed:playSeed,items:[]});startGame(playSeed);advPublish()}
-function joinHost(p,n,att){if(peer!==p)return;const c=p.connect(PRE+roomCode,{reliable:true});let ok=0;wire(c);
- c.on('open',()=>{ok=1;clearTimeout(joinT);setSt('Вход в комнату...');c.send({t:'hi',n:name})});
- clearTimeout(joinT);joinT=setTimeout(()=>{if(ok||peer!==p)return;try{c.close()}catch(e){}delete conns[c.peer];
-  if(att<3){if(p._relay){forceDirect=true;forceRelay=false;setSt('Через ретранслятор не вышло — пробуем напрямую...')}else{forceDirect=false;forceRelay=true;setSt('Прямое соединение не вышло — пробуем через ретранслятор...')}net(roomCode,att+1);return}
-  if(n<1){setSt('Не удаётся соединиться, повтор...');joinHost(p,n+1,att)}else setSt('Не удалось подключиться. Включи «Режим VPN» в настройках (или проверь код/отключи VPN).')},10000)}
-function net(code,att){att=att||0;
+function joinHost(p,n,att){if(peer!==p)return;const c=p.connect(PRE+roomCode,{reliable:true});wire(c);
+ c.on('open',()=>{if(xport==='m'||peer!==p){try{c.close()}catch(e){}return}xport='p';mqStop();setSt('Вход в комнату...');c.send({t:'hi',n:name})})}
+let netSess=0;
+function net(code,att){att=att||0;const sess=++netSess;
  name=$('nm').value.trim()||'Игрок';online=true;isHost=!code;started=0;got=0;roster=[];
  roomCode=code?String(code).toUpperCase():newCode();
  roomName=($('rn').value.trim()||name+' · игра').slice(0,24);
  killPeer();
  setSt(isHost?'Создание комнаты...':'Подключение к комнате '+roomCode+'...');
  if(!micStarted){micStarted=1;micP=getMic().then(m=>{mic=m;if(playing)hud();return m}).catch(()=>null)}
- const relay=forceDirect?false:(VPN()||forceRelay);let p;try{p=new Peer(isHost?PRE+roomCode:undefined,mkICE(relay))}catch(e){setSt('Ошибка сети: '+e.message);online=false;return}
- peer=p;p._relay=relay;
+ mqStart();
+ if(!isHost){if(VPN())mqWant=1;setTimeout(()=>{if(sess===netSess&&!xport){mqWant=1;mqHello()}},3500)}
+ let p=null;try{p=new Peer(isHost?PRE+roomCode:undefined,mkICE(false))}catch(e){console.warn('[NET] Peer',e);if(!isHost){mqWant=1;mqHello()}}
+ if(!p)return;peer=p;
+ p._ot=setTimeout(()=>{if(peer!==p||p._opened||hostReadyF||!isHost)return;if(att<3){setSt('Сервер отвечает медленно, повтор '+(att+1)+'/3...');net(null,att+1)}else{setSt('Сервер соединений недоступен. Проверь интернет/VPN и попробуй позже.');online=false}},12000);
  p.on('error',e=>{if(peer!==p)return;const t=e&&e.type;console.warn('[NET]',t,e);
   if(t=='unavailable-id'&&isHost&&att<6){setSt('Код занят, подбираем другой...');setTimeout(()=>net(null,att+1),300);return}
-  if(t=='peer-unavailable'){setSt('Комната '+roomCode+' не найдена. Проверь код.');killPeer();online=false;return}
+  if(!isHost){if(t=='peer-unavailable'||['network','server-error','socket-error','socket-closed','browser-incompatible','webrtc'].indexOf(t)>=0){setSt('Пробуем через сервер связи...');mqWant=1;mqHello();return}}
   if(['network','server-error','socket-error','socket-closed'].indexOf(t)>=0){
-   if(!p._opened){if(att<4){setSt('Нет связи с сервером, повтор '+(att+1)+'/4...');setTimeout(()=>{if(peer===p)net(isHost?null:roomCode,att+1)},1500)}else{setSt('Сервер недоступен. Попробуй позже или другую сеть.');online=false}}
-   else{setSt('Связь с сервером потеряна, восстанавливаем...');setTimeout(()=>{if(peer===p&&!p.destroyed){try{p.reconnect()}catch(x){}}},1500)}
+   if(hostReadyF)return;
+   if(!p._opened){if(att<4){setSt('Нет связи с сервером, повтор '+(att+1)+'/4...');setTimeout(()=>{if(peer===p)net(null,att+1)},1500)}else{setSt('Сервер недоступен. Попробуй позже или другую сеть.');online=false}}
+   else{setTimeout(()=>{if(peer===p&&!p.destroyed){try{p.reconnect()}catch(x){}}},1500)}
    return}
-  setSt('Ошибка: '+t)});
+  if(!xport&&!hostReadyF)setSt('Ошибка: '+t)});
  p.on('call',async c=>{await micP;try{c.answer(mic||undefined)}catch(e){}addCall(c.peer,c)});
- p.on('disconnected',()=>{if(peer!==p||p.destroyed||!p._opened)return;setSt('Связь с сервером потеряна, восстанавливаем...');setTimeout(()=>{if(peer===p&&!p.destroyed&&p.disconnected){try{p.reconnect()}catch(e){}}},1000)});
- p.on('open',id=>{if(p._opened){setSt('');return}p._opened=1;myId=id;
-  if(isHost){roster=[{id:id,n:name,h:1}];go('s-lobby');renderLobby();setSt('');startAdv();
+ p.on('disconnected',()=>{if(peer!==p||p.destroyed||!p._opened)return;setTimeout(()=>{if(peer===p&&!p.destroyed&&p.disconnected){try{p.reconnect()}catch(e){}}},1000)});
+ p.on('open',id=>{clearTimeout(p._ot);if(p._opened){return}p._opened=1;
+  if(isHost){hostReady(id);
    p.on('connection',c=>{
     if(Object.keys(conns).length>=5){c.on('open',()=>{try{c.send({t:'full'})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400)});return}
     wire(c);c.on('open',()=>setTimeout(()=>{const ids=[myId].concat(Object.keys(conns));send({t:'peers',list:ids});voiceMesh(ids)},600))})}
-  else joinHost(p,0,att)})}
+  else{myId=id;joinHost(p,0,att)}})}
+
 async function loadList(){const L=$('rl');if(listBusy)return;listBusy=1;if(!L.children.length)L.textContent='Поиск серверов...';
  try{const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),8000);
   const r=await fetch(NTFY+'/json?poll=1&since=90s',{cache:'no-store',signal:ctl.signal});clearTimeout(to);if(!r.ok)throw new Error('HTTP '+r.status);
@@ -713,18 +782,18 @@ spot=new THREE.SpotLight(0xdfe8ff,2.8,38,Math.PI/5.5,.5,1.2);spot.position.set(.
 me={x:0,z:0,ry:0,pitch:0,hp:3,stam:1,bob:0,dead:0,tired:0,flash:1,bat:1,cr:0,h:1.6,q:8,y:0,vy:0,climb:0};M={x:0,z:0,r:0,stun:99,s:0};
 build(7);addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();R.setSize(innerWidth,innerHeight)});
 document.addEventListener('click',()=>audio(),{once:true});loop();
-if(TOUCH){document.body.classList.add('t');set.q=1;R.setPixelRatio(1);$('o-q').value='1';
+if(TOUCH){document.body.classList.add('t');document.addEventListener('contextmenu',e=>e.preventDefault());set.q=1;R.setPixelRatio(1);$('o-q').value='1';
  const z=$('tc'),jb=$('jb'),jk=$('jk');let jid=null,lid=null,ox=0,oy=0,lx=0,ly=0;
  const tb=(id,fn)=>{const e=$(id);e.addEventListener('touchstart',ev=>{ev.preventDefault();ev.stopPropagation();fn(e)},{passive:false})};
  tb('bS',e=>{TC.b=TC.b?0:1;e.classList.toggle('on',!!TC.b);TC.sp=TC.b});
  tb('bC',e=>{keys.KeyC=!keys.KeyC;e.classList.toggle('on',!!keys.KeyC)});
  tb('bF',e=>{if(playing){me.flash=!me.flash;beep(1200,.04,.1,'square');e.classList.toggle('on',!!me.flash)}});
  tb('bM',e=>{if(mic){mic.getAudioTracks().forEach(x=>x.enabled=!x.enabled);hud();e.classList.toggle('on',!mic.getAudioTracks()[0].enabled)}});
- tb('bT',()=>{const v=prompt('Сообщение:');if(v&&v.trim()){const m=v.trim().slice(0,120);chat(name,m);send({t:'chat',n:name,m})}});
- z.addEventListener('touchstart',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.clientX<innerWidth*.45&&jid==null){jid=t.identifier;ox=t.clientX;oy=t.clientY;jb.style.display='block';jb.style.left=ox+'px';jb.style.top=oy+'px';jk.style.transform='none'}else if(lid==null){lid=t.identifier;lx=t.clientX;ly=t.clientY}}},{passive:false});
+ tb('bT',()=>{const ci=$('ci');if(!typing){typing=true;ci.style.display='block';ci.focus()}else{const v=ci.value.trim();if(v){chat(name,v);send({t:'chat',n:name,m:v})}ci.value='';ci.style.display='none';typing=false;ci.blur()}});
+ z.addEventListener('touchstart',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.clientX<innerWidth*.45&&jid==null){jid=t.identifier;ox=t.clientX;oy=t.clientY;jb.style.display='block';$('jh').style.display='none';jb.style.left=ox+'px';jb.style.top=oy+'px';jk.style.transform='none'}else if(lid==null){lid=t.identifier;lx=t.clientX;ly=t.clientY}}},{passive:false});
  z.addEventListener('touchmove',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.identifier==jid){let dx=t.clientX-ox,dy=t.clientY-oy;const m=Math.hypot(dx,dy),R0=55;if(m>R0){dx*=R0/m;dy*=R0/m}const k=Math.min(1,m/R0);TC.f=k>.2?-dy/R0:0;TC.s=k>.2?dx/R0:0;jk.style.transform='translate('+dx+'px,'+dy+'px)';TC.sp=TC.b||k>.95?1:0}
   else if(t.identifier==lid&&playing){me.ry-=(t.clientX-lx)*.006*set.sens;me.pitch=clamp(me.pitch-(t.clientY-ly)*.006*set.sens,-1.4,1.4);lx=t.clientX;ly=t.clientY}}},{passive:false});
- const tend=ev=>{for(const t of ev.changedTouches){if(t.identifier==jid){jid=null;TC.f=TC.s=0;TC.sp=TC.b;jb.style.display='none'}if(t.identifier==lid)lid=null}};
+ const tend=ev=>{for(const t of ev.changedTouches){if(t.identifier==jid){jid=null;TC.f=TC.s=0;TC.sp=TC.b;jb.style.display='none';$('jh').style.display='block'}if(t.identifier==lid)lid=null}};
  z.addEventListener('touchend',tend);z.addEventListener('touchcancel',tend);
  document.addEventListener('touchend',()=>{const e=document.documentElement;if(!document.fullscreenElement&&e.requestFullscreen)e.requestFullscreen().then(()=>{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{})}).catch(()=>{})},{once:true})}
 </script></body></html>
