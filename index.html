@@ -46,8 +46,9 @@ html,body{touch-action:none;overscroll-behavior:none}
 #hud{position:fixed;left:18px;top:16px;z-index:9;display:none;font-size:15px;letter-spacing:.1em;text-shadow:0 0 6px #000;line-height:1.7}
 #bb{width:150px;height:5px;background:#2228;margin-top:4px}#bb i{display:block;height:100%;background:#fd3}
 #bar{width:150px;height:5px;background:#2228;margin-top:4px}#bar i{display:block;height:100%;background:#9bd;width:100%}
-#log{position:fixed;left:18px;bottom:18px;z-index:9;width:380px;font-size:14px;text-shadow:0 0 5px #000;display:none}
-#ci{display:none;position:fixed;left:18px;bottom:18px;z-index:10;width:380px;font-size:15px;padding:9px 12px}
+#log{position:fixed;left:18px;bottom:190px;z-index:9;width:380px;max-height:180px;overflow-y:auto;font-size:14px;text-shadow:0 0 5px #000;display:none;background:rgba(0,0,0,.5);padding:8px 12px;border-left:2px solid #445;pointer-events:none;line-height:1.4}
+#log div{margin:3px 0}
+#ci{display:none;position:fixed;left:18px;bottom:18px;z-index:10;width:380px;font-size:15px;padding:10px 14px;background:#080c18f0;border:1px solid #2a3350;letter-spacing:.08em}
 #msg{position:fixed;top:28%;width:100%;text-align:center;font-size:28px;letter-spacing:.25em;color:#d33;z-index:9;opacity:0;transition:opacity .6s;text-shadow:0 0 18px #000;pointer-events:none}
 #pause{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:8;font-size:20px;letter-spacing:.3em;background:#0008;cursor:pointer}
 #end{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:30;background:#000e;text-align:center}
@@ -83,7 +84,7 @@ html,body{height:100%;-webkit-touch-callout:none;-webkit-tap-highlight-color:tra
   <div class="cards"><div class="card" onclick="solo()"><h3>ОДИНОЧНАЯ</h3><p>Ты один на заброшенном заводе. Только фонарь и он.</p></div>
   <div class="card" onclick="go('s-mp')"><h3>МУЛЬТИПЛЕЕР</h3><p>До 6 друзей, голосовой и текстовый чат.</p></div></div>
   <button class="b s" onclick="go('s-title')">← Назад</button></div>
- <div class="scr" id="s-mp"><h2>Мультиплеер</h2><button class="b" onclick="go('s-list');loadList()">Список серверов</button>
+ <div class="scr" id="s-mp"><h2>Мультиплеер</h2><p class="sub" style="margin:0 0 12px;font-size:13px;letter-spacing:.15em">Подключение через сервер связи (работает почти везде)</p><button class="b" onclick="go('s-list');loadList()">Список серверов</button>
   <input class="in" id="rn" maxlength="24" placeholder="НАЗВАНИЕ КОМНАТЫ" style="margin-top:18px"><button class="b" onclick="net()">Создать комнату</button>
   <input class="in" id="code" maxlength="4" placeholder="КОД КОМНАТЫ" style="margin-top:18px;text-transform:uppercase"><button class="b" onclick="joinRoom()">Войти по коду</button>
   <button class="b s" onclick="go('s-play')">← Назад</button></div>
@@ -97,7 +98,7 @@ html,body{height:100%;-webkit-touch-callout:none;-webkit-tap-highlight-color:tra
   <label class="sl">Сложность<select class="in" id="o-diff" style="font-size:15px"><option value="1">Выживание</option><option value="1.25">Кошмар</option></select></label>
   <label class="sl">Качество графики<select class="in" id="o-q" style="font-size:15px"><option value="1.5">Высокое</option><option value="1">Среднее</option><option value=".7">Низкое</option></select></label>
   <label class="sl" style="display:block;margin:10px 0">Сразу через сервер связи (если играешь с VPN)<input type="checkbox" id="o-vpn" style="margin-left:10px"></label><label class="sl" style="display:block;margin:10px 0">Свой TURN (необязательно): <input id="o-turn" placeholder="turn:хост:443?transport=tcp|логин|пароль" style="width:100%;margin-top:6px;font-size:13px"></label><button class="b s" onclick="applySet();go('s-title')">← Сохранить</button></div>
- <div class="scr" id="s-how"><h2>Как выжить</h2><div class="ks"><b>WASD</b>ходьба &nbsp; <b>SHIFT</b>бег<br><b>F</b>фонарь &nbsp; <b>C</b>красться &nbsp; <b>M</b>микрофон &nbsp; <b>ENTER</b>чат<br><br>Найди 5 предохранителей — они тускло светятся голубым. Загляни в склад и в трубы.<br>Затем беги к воротам на краю территории.<br>Векчик не проходит сквозь стены, не лезет в трубы и не заходит в сторожку (там оберег), но ждёт у входа.<br>Лестницы на контейнерах: подойди и иди вперёд, вниз — назад. Наверху добыча, а на высоту 2 этажей он не достаёт.<br>На телефоне: левая часть экрана — стик ходьбы (потяни до края — бег), правая — осмотр, кнопки справа внизу.<br><br>Векчик слышит бег и свет фонаря. Крадись (C) — и он потеряет след.<br>Каждый предохранитель его привлекает. Ищи жёлтые батарейки.<br>Пока смотришь на него — он почти замирает. Не моргай.</div>
+ <div class="scr" id="s-how"><h2>Как выжить</h2><div class="ks"><b>WASD</b>ходьба &nbsp; <b>SHIFT</b>бег<br><b>F</b>фонарь &nbsp; <b>C</b>красться &nbsp; <b>ENTER</b>чат<br><br>Найди 5 предохранителей — они тускло светятся голубым. Загляни в склад и в трубы.<br>Затем беги к воротам на краю территории.<br>Векчик не проходит сквозь стены, не лезет в трубы и не заходит в сторожку (там оберег), но ждёт у входа.<br>Лестницы на контейнерах: подойди и иди вперёд, вниз — назад. Наверху добыча, а на высоту 2 этажей он не достаёт.<br>На телефоне: левая часть экрана — стик ходьбы (потяни до края — бег), правая — осмотр, кнопки справа внизу.<br><br>Векчик слышит бег и свет фонаря. Крадись (C) — и он потеряет след.<br>Каждый предохранитель его привлекает. Ищи жёлтые батарейки.<br>Пока смотришь на него — он почти замирает. Не моргай.</div>
   <button class="b s" onclick="go('s-title')">← Назад</button></div>
 <button class="b s" id="bCancel" style="display:none;position:absolute;left:8vw;bottom:9vh" onclick="location.reload()">✕ Отмена</button><p id="st" style="position:absolute;left:8vw;bottom:5vh;margin:0;background:#000a;padding:2px 6px"></p></div>
 <div id="ld"><div id="lt"></div><div id="lb"><i></i></div></div>
@@ -108,7 +109,7 @@ html,body{height:100%;-webkit-touch-callout:none;-webkit-tap-highlight-color:tra
 <div class="tb" id="bS" style="right:calc(26px + env(safe-area-inset-right));bottom:30px;width:88px;height:88px">БЕГ</div>
 <div class="tb" id="bC" style="right:calc(128px + env(safe-area-inset-right));bottom:38px">▼</div>
 <div class="tb" id="bF" style="right:calc(38px + env(safe-area-inset-right));bottom:132px">🔦</div>
-<div class="tb" id="bM" style="right:calc(92px + env(safe-area-inset-right));top:12px;width:54px;height:54px">🎤</div>
+
 <div class="tb" id="bT" style="right:calc(26px + env(safe-area-inset-right));top:12px;width:54px;height:54px;display:none">💬</div></div><div id="pause">КЛИКНИ, ЧТОБЫ ИГРАТЬ</div>
 <div id="end"><h1 class="t" id="et" data-t=""></h1><p class="sub" id="es"></p><button class="b" onclick="location.reload()">В меню</button></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -118,7 +119,7 @@ const $=id=>document.getElementById(id),PRE='vekchik-',S=85;
 const COL=[0xb33333,0x3377bb,0x33aa55,0xccaa33,0xaa55cc,0xee8833],TIPS=['Он двигается медленно, пока ты на него смотришь.','Бег быстрее него, но выносливость кончится.','Предохранители тускло светятся голубым. Ищи их в укромных местах.','Чем больше предохранителей — тем он быстрее.','Если слышишь помехи — он совсем рядом.','Приседай (C) и гаси фонарь — он тебя не услышит.','Предохранитель привлекает Векчика. Готовься бежать.','Батарейки жёлтые, фонарь садится.','На контейнерах есть лестницы. Один этаж он ещё достаёт, два — нет.','Спрыгнул с высоты — шумно. Он слышит.'];
 let G,scene,cam,R,spot,mon,monEye,items=[],bats=[],PIPES=[],BX=[],MB=[],LD=[],PL=[],NAV=null,gate=[],gateBX=null,lamps=[],TR=[],taken=0,exitPos,exitM,exitL,dust,curSeed=1;
 let me,M,set={sens:1,vol:.8,grain:.08,q:1.5,diff:1};
-let isHost=true,online=false,playing=false,locked=false,typing=false,peer,conns={},calls={},rem={},rau={},myId='',name='Игрок',mic;
+let isHost=true,online=false,playing=false,locked=false,typing=false,peer,conns={},rem={},myId='',name='Игрок';
 const TOUCH=matchMedia("(pointer:coarse)").matches||navigator.maxTouchPoints>0,TC={f:0,s:0,b:0,sp:0},keys={},clock=new THREE.Clock();let t=0,netT=0,stepT=0,hb=0,pending=null,looked=0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),hash=s=>{let h=0;for(const c of s)h=h*31+c.charCodeAt(0)|0;return Math.abs(h)};
 function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let a=Math.imul(s^s>>>15,1|s);a=a+Math.imul(a^a>>>7,61|a)^a;return((a^a>>>14)>>>0)/4294967296}}
@@ -571,11 +572,11 @@ function caught(){if(me.dead)return;me.dead=1;me.hp--;me.ry=Math.atan2(-(M.x-me.
  setTimeout(()=>{if(me.hp<=0){end('ТЫ ПОГИБ','Завод забрал ещё одного...');return}spawnPt();me.ry=Math.PI;me.dead=0;if(stG)stG.gain.value=0},2800)}
 function end(a,b){playing=false;document.exitPointerLock();$('et').textContent=a;$('et').dataset.t=a;$('es').textContent=b;$('end').style.display='flex'}
 function toast(s,ms){const m=$('msg');m.textContent=s;m.style.opacity=1;clearTimeout(m.t);m.t=setTimeout(()=>m.style.opacity=0,ms)}
-function hud(){const mc=mic&&!mic.silent&&mic.getAudioTracks()[0]&&mic.getAudioTracks()[0].enabled;$('hud').innerHTML=`ПРЕДОХРАНИТЕЛИ <b>${taken}/5</b> &nbsp; ${'♥'.repeat(Math.max(0,me.hp))}<div id="bar"><i style="width:${me.stam*100}%"></i></div><div id="bb"><i style="width:${me.bat*100}%"></i></div><div id="hn" style="color:#e33;letter-spacing:.25em;font-size:13px;height:18px"></div>${online?'ИГРОКОВ '+(Object.keys(rem).length+1)+' · МИКРОФОН '+(mc?'ВКЛ':'ВЫКЛ')+(isHost?' · КОМНАТА <b>'+myId.slice(PRE.length)+'</b>':''):''}`}
+function hud(){$('hud').innerHTML=`ПРЕДОХРАНИТЕЛИ <b>${taken}/5</b> &nbsp; ${'♥'.repeat(Math.max(0,me.hp))}<div id="bar"><i style="width:${me.stam*100}%"></i></div><div id="bb"><i style="width:${me.bat*100}%"></i></div><div id="hn" style="color:#e33;letter-spacing:.25em;font-size:13px;height:18px"></div>${online?'ИГРОКОВ '+(Object.keys(rem).length+1)+(isHost?' · КОМНАТА <b>'+(myId.startsWith(PRE)?myId.slice(PRE.length):roomCode)+'</b>':''):''}`}
 function startGame(seed){$('ld').classList.add('on');$('lt').textContent=TIPS[Math.random()*TIPS.length|0];$('lb').innerHTML='<i></i>';name=$('nm').value.trim()||'Игрок';audio();
  setTimeout(()=>{build(seed);const a=rng(seed+7)()*6.28;me={x:0,z:0,ry:0,pitch:0,hp:3,stam:1,bob:0,dead:0,tired:0,flash:1,bat:1,cr:0,h:1.6,q:8,y:0,vy:0,climb:0};spawnPt();me.ry=Math.PI;taken=0;M={x:Math.cos(a)*60,z:Math.sin(a)*60,r:0,stun:20,s:0,tx:0,tz:0,hunt:0,al:0,lg:0,lc:6,lt:0};[M.x,M.z]=snap(M.x,M.z);
-  $('ui').style.display='none';$('ld').classList.remove('on');$('hud').style.display='block';if(online)$('log').style.display='block';playing=true;hud();
-  if(pending)pending.forEach(i=>takeItem(i,0));toast('Найди 5 предохранителей',3500);$('pause').style.display=TOUCH?'none':'flex';if(TOUCH){locked=true;try{navigator.wakeLock&&navigator.wakeLock.request('screen').catch(()=>{})}catch(e){}$('tc').style.display='block';$('bF').classList.add('on');$('bT').style.display=online?'flex':'none';$('bM').style.display=online?'flex':'none'}},1600)}
+  $('ui').style.display='none';$('ld').classList.remove('on');$('hud').style.display='block';if(online){$('log').style.display='block';if(!TOUCH){const hint=document.createElement('div');hint.id='chathint';hint.textContent='ENTER — чат';hint.style.cssText='position:fixed;left:18px;bottom:155px;z-index:9;font-size:12px;letter-spacing:.15em;color:#7a86a6;text-shadow:0 0 4px #000';document.body.appendChild(hint)}}playing=true;hud();
+  if(pending)pending.forEach(i=>takeItem(i,0));toast('Найди 5 предохранителей',3500);$('pause').style.display=TOUCH?'none':'flex';if(TOUCH){locked=true;try{navigator.wakeLock&&navigator.wakeLock.request('screen').catch(()=>{})}catch(e){}$('tc').style.display='block';$('bF').classList.add('on');$('bT').style.display=online?'flex':'none'}},1600)}
 /* ---------- loop ---------- */
 function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05);t+=dt;playing?update(dt):menuCam();adaptRes(dt);if(sky)sky.position.set(cam.position.x,0,cam.position.z);const bl=Math.sin(t*2.2)>.55;blink.forEach(q=>q.visible=bl);R.render(scene,cam)}
 function menuCam(){cam.position.set(Math.sin(t*.12)*1.5,1.7,22);cam.rotation.set(0,Math.sin(t*.08)*.12,0);cam.fov=75;cam.updateProjectionMatrix();
@@ -603,7 +604,7 @@ function update(dt){
  if(d<1.4&&me.y<2.9&&!me.dead&&(!isHost||M.stun<=0)&&los2(M.x,M.z,me.x,me.z))caught();
  for(const id in rem){const p=rem[id],mvd=Math.hypot(p.tx-p.x,p.tz-p.z);p.x+=(p.tx-p.x)*Math.min(1,dt*12);p.z+=(p.tz-p.z)*Math.min(1,dt*12);p.mesh.position.set(p.x,p.y||0,p.z);p.mesh.rotation.y=p.try+Math.PI;
   const sw=Math.sin(t*9)*(mvd>.02?.7:0);p.mesh.ll.rotation.x=sw;p.mesh.rl.rotation.x=-sw;p.mesh.la.rotation.x=-sw;p.mesh.ra.rotation.x=sw;
-  const a=rau[id];if(a)a.volume=clamp(1.2-Math.hypot(p.x-me.x,p.z-me.z)/35,0,1)}
+  }
  for(const it of items)if(!it.taken){it.m.rotation.y+=dt*2;it.m.position.y=(it.b||0)+1.1+Math.sin(t*2+it.x)*.15;if(!me.dead&&Math.hypot(it.x-me.x,it.z-me.z)<1.8&&Math.abs(me.y-(it.b||0))<1.8)takeItem(items.indexOf(it),1)}
  for(const b of bats)if(!b.t){b.m.rotation.y+=dt*2;if(!me.dead&&Math.hypot(b.x-me.x,b.z-me.z)<1.5&&Math.abs(me.y-(b.b||0))<1.6){b.t=1;b.m.visible=false;me.bat=Math.min(1,me.bat+.5);beep(900,.2,.15,'triangle',300);toast('Батарейка +50%',1200)}}
  if(taken>=5&&!me.dead&&Math.hypot(exitPos.x-me.x,exitPos.z-me.z)<3.5){send({t:'win'});win()}
@@ -627,7 +628,7 @@ document.addEventListener('keydown',e=>{
  if(e.code=='Enter'&&online&&playing){if(!typing){typing=true;$('ci').style.display='block';$('ci').focus();document.exitPointerLock()}else{const v=$('ci').value.trim();if(v){chat(name,v);send({t:'chat',n:name,m:v})}$('ci').value='';$('ci').style.display='none';typing=false;R.domElement.requestPointerLock()}e.preventDefault();return}
  if(typing)return;keys[e.code]=1;
  if(e.code=='KeyF'&&playing){me.flash=!me.flash;beep(1200,.04,.1,'square')}
- if(e.code=='KeyM'&&mic){mic.getAudioTracks().forEach(x=>x.enabled=!x.enabled);hud()}});
+});
 document.addEventListener('keyup',e=>keys[e.code]=0);
 function chat(n,m){const l=$('log'),p=document.createElement('div');p.textContent=n+': '+m;l.appendChild(p);while(l.children.length>7)l.firstChild.remove()}
 /* ---------- network ---------- */
@@ -642,12 +643,12 @@ const VPN=()=>lsGet('vk_vpn3')==='1';let forceRelay=false,forceDirect=false;
 function mkICE(relay){const l=ICEBASE.slice(),c=(lsGet('vk_turn')||'').split('|');if(c[0]&&c[0].indexOf('turn')==0)l.unshift({urls:c[0].split(','),username:c[1]||'',credential:c[2]||''});
  return{debug:1,config:{iceServers:l,iceCandidatePoolSize:relay?0:10,iceTransportPolicy:relay?'relay':'all'}}}
 try{$('o-vpn').checked=VPN();$('o-turn').value=lsGet('vk_turn')||''}catch(e){}
-let started=0,playSeed=0,roster=[],roomCode='',got=0,advT=null,advD=null,joinT=null,listBusy=0,roomName='',micP=Promise.resolve(),micStarted=0;
+let started=0,playSeed=0,roster=[],roomCode='',got=0,advT=null,advD=null,joinT=null,listBusy=0,roomName='';
 let stBase='',stT0=0;const PRG=/Подключ|Создан|Вход|пробуем|Пробуем|повтор|Нет связи|Код занят|отвечает|восстанавл/;
 const setSt=s=>{stBase=s;stT0=Date.now();$('st').textContent=s;const c=$('bCancel');if(c)c.style.display=PRG.test(s)?'block':'none'};
 setInterval(()=>{if(stBase&&PRG.test(stBase)&&online&&!playing&&!got&&!(isHost&&peer&&peer._opened))$('st').textContent=stBase+' · '+((Date.now()-stT0)/1000|0)+' с'},1000);
 function newCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<4;i++)s+=A[Math.random()*A.length|0];return s}
-function killPeer(){clearTimeout(joinT);if(advT){clearInterval(advT);advT=null}mqStop();xport='';mqWant=0;hostReadyF=0;try{if(peer)peer.destroy()}catch(e){}peer=null;conns={};for(const id in calls){try{calls[id].close()}catch(e){}}calls={}}
+function killPeer(){clearTimeout(joinT);if(advT){clearInterval(advT);advT=null}mqStop();xport='';mqWant=0;hostReadyF=0;try{if(peer)peer.destroy()}catch(e){}peer=null;conns={}}
 /* ---------- запасной канал: MQTT поверх WebSocket (работает через VPN, без WebRTC) ---------- */
 const MQURLS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://mqtt.eclipseprojects.io/mqtt','wss://test.mosquitto.org:8081/'];
 let mq=null,mqId='',MQT='',xport='',mqHB=null,mqHiT=null,mqFail=null,mqWant=0,hostReadyF=0;const mqSeen={};
@@ -675,11 +676,15 @@ function mqStart(){if(mq||!roomCode)return;MQT='vekchik/v1/'+roomCode;mqId=isHos
  mq=mqOpen(MQT,mqMsg,up=>{if(!mq)return;if(up){if(isHost)hostReady(PRE+roomCode);else if(mqWant)mqHello()}});
  clearInterval(mqHB);mqHB=setInterval(mqBeat,2000)}
 function mqStop(){if(mq){try{mq.close()}catch(e){}mq=null}clearInterval(mqHB);mqHB=null;clearInterval(mqHiT);mqHiT=null;clearTimeout(mqFail)}
-function mqHello(){if(xport==='p'||isHost)return;mqWant=1;if(!mq||!mq.ok)return;if(xport==='m')return;
- xport='m';myId=mqId;const hid=PRE+roomCode,c=conns[hid];if(c&&!c.mq){try{c.close()}catch(e){}}conns[hid]=mqConn(hid);
+function mqHello(){if(xport==='p'||isHost)return;mqWant=1;if(!mq){mqStart();setTimeout(mqHello,600);return}if(!mq.ok){setTimeout(mqHello,800);return}if(xport==='m')return;
+ xport='m';myId=mqId;const hid=PRE+roomCode;conns[hid]=mqConn(hid);
+ // PeerJS больше не нужен
  const pr=peer;peer=null;try{if(pr)pr.destroy()}catch(e){}
- setSt('Подключение через сервер...');const hi=()=>mqPub(hid,{t:'hi',n:name});hi();clearInterval(mqHiT);mqHiT=setInterval(()=>{if(got){clearInterval(mqHiT);return}hi()},2000);
- clearTimeout(mqFail);mqFail=setTimeout(()=>{if(!got&&!playing){setSt('Комната '+roomCode+' не найдена (хост должен быть онлайн) или сервер связи недоступен.');online=false;mqStop()}},15000)}
+ setSt('Подключение через сервер связи...');
+ const hi=()=>mqPub(hid,{t:'hi',n:name});
+ hi();
+ clearInterval(mqHiT);mqHiT=setInterval(()=>{if(got||playing){clearInterval(mqHiT);return}hi()},1500);
+ clearTimeout(mqFail);mqFail=setTimeout(()=>{if(!got&&!playing){setSt('Комната '+roomCode+' не найдена. Хост должен быть онлайн.');online=false}},12000)}
 function mqMsg(topic,txt){let m;try{m=JSON.parse(txt)}catch(e){return}if(!m||m.f===mqId||(m.t&&m.t!==mqId)||!m.d)return;
  const from=m.f;mqSeen[from]=Date.now();
  if(isHost){if(!conns[from]){if(Object.keys(conns).length>=5){mqPub(from,{t:'full'});return}conns[from]=mqConn(from)}}
@@ -689,7 +694,7 @@ function mqBeat(){const now=Date.now();
  if(isHost){for(const id of Object.keys(conns)){if(conns[id].mq&&now-(mqSeen[id]||now)>10000){delete conns[id];roster=roster.filter(p=>p.id!==id);bcastLobby();send({t:'left',id:id});dropRemote(id)}}if(Object.keys(conns).length)send({t:'ping'})}
  else if(xport==='m'){mqPub(PRE+roomCode,{t:'ping'});const hs=mqSeen[PRE+roomCode];if(got&&hs&&now-hs>12000){alert('Связь с хостом потеряна');location.reload()}}}
 function hostReady(id){if(hostReadyF)return;hostReadyF=1;myId=id;roster=[{id:id,n:name,h:1}];go('s-lobby');renderLobby();setSt('');startAdv()}
-function dropRemote(id){const p=rem[id];if(p){scene.remove(p.mesh);delete rem[id]}if(calls[id]){try{calls[id].close()}catch(e){}delete calls[id]}const a=rau[id];if(a){try{a.pause();a.srcObject=null}catch(e){}delete rau[id]}if(playing)hud()}
+function dropRemote(id){const p=rem[id];if(p){scene.remove(p.mesh);delete rem[id]}if(playing)hud()}
 function onData(from,d){
  if(!d||typeof d!=='object')return;
  if(isHost&&RELAY.indexOf(d.t)>=0){if(d.t=='p')d.id=from;for(const id in conns)if(id!==from&&conns[id]&&conns[id].open){try{conns[id].send(d)}catch(e){}}}
@@ -705,7 +710,7 @@ function onData(from,d){
   case'win':if(playing)win();break;
   case'caught':banish(rem[from]?rem[from].x:0,rem[from]?rem[from].z:0);break;
   case'left':dropRemote(d.id);break;
-  case'peers':if(Array.isArray(d.list))voiceMesh(d.list);break}}
+  case'peers':break}}
 function watchPC(c){const pc=c.peerConnection;if(!pc||c._w)return;c._w=1;pc.addEventListener('iceconnectionstatechange',()=>{const st=pc.iceConnectionState;
   if(st=='connected'||st=='completed'){pc.getStats().then(r=>{let t='';r.forEach(x=>{if(x.type=='candidate-pair'&&x.nominated&&x.state=='succeeded'){const l=r.get(x.localCandidateId);if(l)t=l.candidateType}});console.log('[NET] ice',t);if(t&&!playing)setSt(t=='relay'?'Связь через ретранслятор (VPN-режим)':'Связь напрямую')}).catch(()=>{})}
   else if(st=='failed'){console.warn('[NET] ice failed');if(!playing)setSt('Соединение не удалось. Включи «Режим VPN» в настройках или отключи VPN.')}})}
@@ -714,11 +719,7 @@ function wire(c){conns[c.peer]=c;watchPC(c);c.on('open',()=>watchPC(c));c.on('da
   if(!isHost){if(playing||got){alert('Связь с хостом потеряна');location.reload()}return}
   roster=roster.filter(p=>p.id!==c.peer);bcastLobby();send({t:'left',id:c.peer});dropRemote(c.peer)});
  c.on('error',e=>console.warn('[NET] conn',e))}
-function callPeer(id){if(calls[id]||!peer)return;const pr=peer;micP.then(()=>{if(calls[id]||!mic||peer!==pr)return;try{addCall(id,pr.call(id,mic))}catch(e){console.warn('[VOICE]',e)}})}
-function voiceMesh(list){list.forEach(id=>{if(id!==myId&&myId<id)callPeer(id)})}
-function addCall(id,c){calls[id]=c;c.on('stream',s=>{const a=rau[id]||(rau[id]=new Audio());a.srcObject=s;a.play().catch(()=>{})});c.on('close',()=>{if(calls[id]===c)delete calls[id]});c.on('error',()=>{if(calls[id]===c)delete calls[id]})}
-async function getMic(){try{if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)return await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){}
- try{const AC=window.AudioContext||window.webkitAudioContext,s=new AC().createMediaStreamDestination().stream;s.silent=1;return s}catch(e){return null}}
+
 /* --- реестр комнат через ntfy.sh --- */
 function advPublish(closed){if(!isHost||!online||!roomCode)return;try{fetch(NTFY,{method:'POST',body:JSON.stringify({code:roomCode,name:roomName,n:roster.length,s:started?1:0,x:closed?1:0,ts:Date.now()})}).catch(()=>{})}catch(e){}}
 function advSoon(){clearTimeout(advD);advD=setTimeout(()=>advPublish(),800)}
@@ -737,42 +738,63 @@ function net(code,att){att=att||0;const sess=++netSess;
  roomName=($('rn').value.trim()||name+' · игра').slice(0,24);
  killPeer();
  setSt(isHost?'Создание комнаты...':'Подключение к комнате '+roomCode+'...');
- if(!micStarted){micStarted=1;micP=getMic().then(m=>{mic=m;if(playing)hud();return m}).catch(()=>null)}
+
+ // MQTT — основной канал (быстрый и надёжный)
  mqStart();
- if(!isHost){if(VPN())mqWant=1;setTimeout(()=>{if(sess===netSess&&!xport){mqWant=1;mqHello()}},3500)}
- let p=null;try{p=new Peer(isHost?PRE+roomCode:undefined,mkICE(false))}catch(e){console.warn('[NET] Peer',e);if(!isHost){mqWant=1;mqHello()}}
- if(!p)return;peer=p;
- p._ot=setTimeout(()=>{if(peer!==p||p._opened||hostReadyF||!isHost)return;if(att<3){setSt('Сервер отвечает медленно, повтор '+(att+1)+'/3...');net(null,att+1)}else{setSt('Сервер соединений недоступен. Проверь интернет/VPN и попробуй позже.');online=false}},12000);
- p.on('error',e=>{if(peer!==p)return;const t=e&&e.type;console.warn('[NET]',t,e);
-  if(t=='unavailable-id'&&isHost&&att<6){setSt('Код занят, подбираем другой...');setTimeout(()=>net(null,att+1),300);return}
-  if(!isHost){if(t=='peer-unavailable'||['network','server-error','socket-error','socket-closed','browser-incompatible','webrtc'].indexOf(t)>=0){setSt('Пробуем через сервер связи...');mqWant=1;mqHello();return}}
+
+ if(isHost){
+  // Хост сразу готов через MQTT, PeerJS — бонус
+  setTimeout(()=>{if(sess===netSess&&!hostReadyF){hostReady(PRE+roomCode);}},400);
+ }else{
+  // Клиент: сразу пробуем MQTT (через 0.8с), PeerJS параллельно
+  mqWant=1;
+  setTimeout(()=>{if(sess===netSess&&!xport&&!got)mqHello()},800);
+ }
+
+ // PeerJS оставляем как запасной (может не сработать за NAT)
+ let p=null;
+ try{p=new Peer(isHost?PRE+roomCode:undefined,mkICE(VPN()||true))}catch(e){console.warn('[NET] Peer',e)}
+ if(!p){if(!isHost)mqHello();return}
+ peer=p;
+
+ p._ot=setTimeout(()=>{
+  if(peer!==p||p._opened||hostReadyF)return;
+  if(isHost&&att<2){setSt('Повтор создания...');net(null,att+1)}
+  else if(!isHost){setSt('Пробуем сервер связи...');mqWant=1;mqHello()}
+ },8000);
+
+ p.on('error',e=>{
+  if(peer!==p)return;
+  const t=e&&e.type;console.warn('[NET]',t,e);
+  if(t==='unavailable-id'&&isHost&&att<5){setSt('Код занят, новый...');setTimeout(()=>net(null,att+1),250);return}
+  if(!isHost){setSt('Сервер связи...');mqWant=1;mqHello();return}
   if(['network','server-error','socket-error','socket-closed'].indexOf(t)>=0){
    if(hostReadyF)return;
-   if(!p._opened){if(att<4){setSt('Нет связи с сервером, повтор '+(att+1)+'/4...');setTimeout(()=>{if(peer===p)net(null,att+1)},1500)}else{setSt('Сервер недоступен. Попробуй позже или другую сеть.');online=false}}
-   else{setTimeout(()=>{if(peer===p&&!p.destroyed){try{p.reconnect()}catch(x){}}},1500)}
-   return}
-  if(!xport&&!hostReadyF)setSt('Ошибка: '+t)});
- p.on('call',async c=>{await micP;try{c.answer(mic||undefined)}catch(e){}addCall(c.peer,c)});
- p.on('disconnected',()=>{if(peer!==p||p.destroyed||!p._opened)return;setTimeout(()=>{if(peer===p&&!p.destroyed&&p.disconnected){try{p.reconnect()}catch(e){}}},1000)});
- p.on('open',id=>{clearTimeout(p._ot);if(p._opened){return}p._opened=1;
-  if(isHost){hostReady(id);
-   p.on('connection',c=>{
-    if(Object.keys(conns).length>=5){c.on('open',()=>{try{c.send({t:'full'})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400)});return}
-    wire(c);c.on('open',()=>setTimeout(()=>{const ids=[myId].concat(Object.keys(conns));send({t:'peers',list:ids});voiceMesh(ids)},600))})}
-  else{myId=id;joinHost(p,0,att)}})}
+   if(att<3){setTimeout(()=>{if(peer===p)net(null,att+1)},1200)}
+   else setSt('Не удалось создать комнату. Попробуй другой код.');
+  }
+ });
 
-async function loadList(){const L=$('rl');if(listBusy)return;listBusy=1;if(!L.children.length)L.textContent='Поиск серверов...';
- try{const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),8000);
-  const r=await fetch(NTFY+'/json?poll=1&since=90s',{cache:'no-store',signal:ctl.signal});clearTimeout(to);if(!r.ok)throw new Error('HTTP '+r.status);
-  const txt=await r.text(),rooms={};
-  for(const ln of txt.split('\n')){if(!ln.trim())continue;let m,i;try{m=JSON.parse(ln);i=JSON.parse(m.message)}catch(e){continue}
-   if(m.event&&m.event!=='message')continue;if(!i||!/^[A-Z0-9]{4}$/.test(i.code))continue;const old=rooms[i.code];if(!old||old.ts<i.ts)rooms[i.code]=i}
-  drawList(Object.values(rooms).filter(i=>!i.x&&i.code!==(isHost&&online?roomCode:'')).sort((a,b)=>b.ts-a.ts))}
- catch(e){L.textContent='Не удалось получить список серверов. Проверь интернет и нажми «Обновить». Можно войти по коду.'}
- listBusy=0}
-function drawList(rooms){const L=$('rl');L.textContent='';if(!rooms.length){L.textContent='Серверов пока нет — создай свой!';return}
- rooms.forEach(r=>{const row=document.createElement('div'),a=document.createElement('span'),n=document.createElement('span'),b=document.createElement('button'),k=+r.n||0;row.className='room';a.textContent=String(r.name||'Комната').slice(0,24)+(r.s?' · идёт игра':'');n.textContent=k+'/6';b.className='b';b.textContent='Войти';b.disabled=k>=6;b.onclick=()=>net(r.code);row.append(a,n,b);L.appendChild(row)})}
-setInterval(()=>{const el=$('s-list');if(el&&el.classList.contains('on'))loadList()},6000);
+ p.on('disconnected',()=>{if(peer!==p||p.destroyed||!p._opened)return;setTimeout(()=>{if(peer===p&&!p.destroyed&&p.disconnected){try{p.reconnect()}catch(e){}}},1000)});
+
+ p.on('open',id=>{
+  clearTimeout(p._ot);
+  if(p._opened)return;
+  p._opened=1;
+  if(isHost){
+   hostReady(id);
+   p.on('connection',c=>{
+    if(Object.keys(conns).length>=5){c.on('open',()=>{try{c.send({t:'full'})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},300)});return}
+    wire(c);
+   });
+  }else{
+   myId=id;
+   // PeerJS получился — пробуем data-канал
+   joinHost(p,0,att);
+  }
+ });
+}
+
 function joinRoom(){const c=$('code').value.trim();if(c.length<4){$('st').textContent='Введите код из 4 символов';return}net(c)}
 function solo(){online=false;isHost=true;startGame(Math.random()*1e9|0)}
 /* ---------- init ---------- */
@@ -788,7 +810,7 @@ if(TOUCH){document.body.classList.add('t');document.addEventListener('contextmen
  tb('bS',e=>{TC.b=TC.b?0:1;e.classList.toggle('on',!!TC.b);TC.sp=TC.b});
  tb('bC',e=>{keys.KeyC=!keys.KeyC;e.classList.toggle('on',!!keys.KeyC)});
  tb('bF',e=>{if(playing){me.flash=!me.flash;beep(1200,.04,.1,'square');e.classList.toggle('on',!!me.flash)}});
- tb('bM',e=>{if(mic){mic.getAudioTracks().forEach(x=>x.enabled=!x.enabled);hud();e.classList.toggle('on',!mic.getAudioTracks()[0].enabled)}});
+ 
  tb('bT',()=>{const ci=$('ci');if(!typing){typing=true;ci.style.display='block';ci.focus()}else{const v=ci.value.trim();if(v){chat(name,v);send({t:'chat',n:name,m:v})}ci.value='';ci.style.display='none';typing=false;ci.blur()}});
  z.addEventListener('touchstart',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.clientX<innerWidth*.45&&jid==null){jid=t.identifier;ox=t.clientX;oy=t.clientY;jb.style.display='block';$('jh').style.display='none';jb.style.left=ox+'px';jb.style.top=oy+'px';jk.style.transform='none'}else if(lid==null){lid=t.identifier;lx=t.clientX;ly=t.clientY}}},{passive:false});
  z.addEventListener('touchmove',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.identifier==jid){let dx=t.clientX-ox,dy=t.clientY-oy;const m=Math.hypot(dx,dy),R0=55;if(m>R0){dx*=R0/m;dy*=R0/m}const k=Math.min(1,m/R0);TC.f=k>.2?-dy/R0:0;TC.s=k>.2?dx/R0:0;jk.style.transform='translate('+dx+'px,'+dy+'px)';TC.sp=TC.b||k>.95?1:0}
