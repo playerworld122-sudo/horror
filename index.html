@@ -102,7 +102,7 @@ html,body{height:100%;-webkit-touch-callout:none;-webkit-tap-highlight-color:tra
   <button class="b s" onclick="go('s-title')">← Назад</button></div>
 <button class="b s" id="bCancel" style="display:none;position:absolute;left:8vw;bottom:9vh" onclick="location.reload()">✕ Отмена</button><p id="st" style="position:absolute;left:8vw;bottom:5vh;margin:0;background:#000a;padding:2px 6px"></p></div>
 <div id="ld"><div id="lt"></div><div id="lb"><i></i></div></div>
-<div id="hud"></div><div id="log"></div><input class="in" id="ci" maxlength="120" placeholder="Сообщение... (Enter)">
+<div id="hud"></div><div id="log"></div><input class="in" id="ci" maxlength="120" placeholder="Сообщение..." enterkeyhint="send" inputmode="text" autocomplete="off" autocapitalize="off">
 <div id="msg"></div>
 <div id="tc"><div id="jb"><i id="jk"></i></div>
 <div id="jh"></div>
@@ -752,8 +752,15 @@ function update(dt){
  if(act&&!me.climb)for(const L of LD){if(me.y<.3&&f>0&&Math.hypot(me.x-L.lx,me.z-L.lz)<1.1&&(-Math.sin(me.ry)*L.fx-Math.cos(me.ry)*L.fz)>.3){me.climb=1;me.L=L;break}if(me.y>=L.top-.3&&f<0&&Math.hypot(me.x-L.tx,me.z-L.tz)<1.3){me.climb=-1;me.L=L;break}}
  if(me.climb){const L=me.L;me.x+=(L.lx-me.x)*Math.min(1,dt*8);me.z+=(L.lz-me.z)*Math.min(1,dt*8);if(me.climb>0&&f<0)me.climb=-1;else if(me.climb<0&&f>0)me.climb=1;me.y+=me.climb*2.3*dt;me.vy=0;
   if(me.climb>0&&me.y>=L.top){me.y=L.top;me.x=L.tx;me.z=L.tz;me.climb=0}else if(me.climb<0&&me.y<=0){me.y=0;me.climb=0}if(!act)me.climb=0}
- const mv=(f||s)&&!me.climb;me.cr=act&&keys.KeyC?1:0;let sp=me.cr?1.7:3.4,run=0;
- if(mv&&(keys.ShiftLeft||TC.sp)&&!me.cr&&!me.tired&&me.stam>0){sp=5.6;run=1;me.stam-=dt*.33;if(me.stam<=0)me.tired=1}else{me.stam=Math.min(1,me.stam+dt*.11);if(me.stam>.35)me.tired=0}
+ const mv=(f||s)&&!me.climb;me.cr=act&&(keys.KeyC)?1:0;let sp=me.cr?1.7:3.4,run=0;
+ const wantRun=!!(keys.ShiftLeft||TC.sp||TC.b);
+ if(mv&&wantRun&&!me.cr&&!me.tired&&me.stam>0.02){
+  sp=5.6;run=1;me.stam=Math.max(0,me.stam-dt*(TOUCH?.22:.33));
+  if(me.stam<=0.02){me.stam=0;me.tired=1;TC.sp=0;if(TOUCH){TC.b=0;const bs=$('bS');if(bs)bs.classList.remove('on')}}
+ }else{
+  me.stam=Math.min(1,me.stam+dt*(me.tired?.16:.12));
+  if(me.stam>.3)me.tired=0;
+ }
  if(mv){const l=Math.hypot(f,s),sn=Math.sin(me.ry),cs=Math.cos(me.ry),dx=(-sn*f+cs*s)/l*sp*dt,dz=(-cs*f-sn*s)/l*sp*dt;
   if(!blocked(me.x+dx,me.z,me.y))me.x+=dx;if(!blocked(me.x,me.z+dz,me.y))me.z+=dz;me.bob+=dt*(run?11:7);stepT-=dt;if(stepT<=0){step();stepT=run?.3:.48}}
  me.hid=inPipe(me.x,me.z)||(Math.abs(me.x)<5.8&&Math.abs(me.z)<4.3&&me.y<1);me.q=(run?38:mv?(me.cr?6:20):me.cr?3:8)*(me.flash&&me.bat>0?1.4:1)*(me.hid?.6:1);if(me.flash&&me.bat>0)me.bat=Math.max(0,me.bat-dt*.011);me.h+=((me.cr?1:1.6)-me.h)*Math.min(1,dt*10);
@@ -802,7 +809,7 @@ function update(dt){
  if(stG&&!me.dead)stG.gain.value=clamp((looked?.5:.12)*(1-d/32),0,.5);
  const sh=d<14?(1-d/14)*.04:0,by=Math.sin(me.bob)*.05;
  cam.position.set(me.x+(Math.random()-.5)*sh,(me.dead?.5:me.h)+by+me.y,me.z+(Math.random()-.5)*sh);cam.rotation.y=me.ry;cam.rotation.x=me.pitch;cam.rotation.z=me.dead?.7:0;
- uiT-=dt;if(uiT<=0){uiT=.1;$('red').style.opacity=clamp(1-d/16,0,.55);const b=$('bar');if(b){b.firstChild.style.width=me.stam*100+'%';$('bb').firstChild.style.width=me.bat*100+'%';$('hn').textContent=M.hunt?'● ОН ТЕБЯ СЛЫШИТ':me.hid?'● УКРЫТИЕ':''}}
+ uiT-=dt;if(uiT<=0){uiT=TOUCH?.05:.1;$('red').style.opacity=clamp(1-d/16,0,.55);const b=$('bar');if(b){b.firstChild.style.width=Math.max(0,me.stam)*100+'%';b.firstChild.style.background=me.tired?'#e55':(me.stam<.3?'#e8a':'#9bd');$('bb').firstChild.style.width=me.bat*100+'%';$('hn').textContent=M.hunt?'● ОН ТЕБЯ СЛЫШИТ':me.hid?'● УКРЫТИЕ':(me.tired?'● УСТАЛ':'')}}
  dustUp();grain();
  netT-=dt;if(netT<=0&&online){netT=.066;const px=+me.x.toFixed(2),pz=+me.z.toFixed(2),pr=+me.ry.toFixed(2);lastP.t+=.066;if(px!==lastP.x||pz!==lastP.z||pr!==lastP.r||lastP.t>.5){lastP={x:px,z:pz,r:pr,t:0};send({t:'p',id:myId,x:px,z:pz,ry:pr,n:name,q:me.q,y:+me.y.toFixed(2),cr:me.cr?1:0})}
  if(isHost){const mx=+M.x.toFixed(2),mz=+M.z.toFixed(2),mr=+M.r.toFixed(2);lastM.t+=.066;if(mx!==lastM.x||mz!==lastM.z||mr!==lastM.r||lastM.t>.5){lastM={x:mx,z:mz,r:mr,t:0};send({t:'m',x:mx,z:mz,r:mr,h:M.hunt})}}}}
@@ -813,7 +820,7 @@ document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockEl
 $('pause').onclick=()=>{audio();R.domElement.requestPointerLock()};
 document.addEventListener('mousemove',e=>{if(locked){me.ry-=e.movementX*.0022*set.sens;me.pitch=clamp(me.pitch-e.movementY*.0022*set.sens,-1.4,1.4)}});
 document.addEventListener('keydown',e=>{
- if(e.code=='Enter'&&online&&playing){if(!typing){typing=true;$('ci').style.display='block';$('ci').focus();document.exitPointerLock()}else{const v=$('ci').value.trim();if(v){chat(name,v);send({t:'chat',n:name,m:v})}$('ci').value='';$('ci').style.display='none';typing=false;R.domElement.requestPointerLock()}e.preventDefault();return}
+ if(e.code=='Enter'&&online&&playing&&!TOUCH){if(!typing){typing=true;$('ci').style.display='block';$('ci').focus();document.exitPointerLock()}else{const v=$('ci').value.trim();if(v){chat(name,v);send({t:'chat',n:name,m:v})}$('ci').value='';$('ci').style.display='none';typing=false;R.domElement.requestPointerLock()}e.preventDefault();return}
  if(typing)return;keys[e.code]=1;
  if(e.code=='KeyF'&&playing){me.flash=!me.flash;beep(1200,.04,.1,'square')}
 });
@@ -1082,30 +1089,67 @@ document.addEventListener('click',()=>audio(),{once:true});loop();
 if(TOUCH){document.body.classList.add('t');document.addEventListener('contextmenu',e=>e.preventDefault());set.q=1;R.setPixelRatio(1);$('o-q').value='1';
  const z=$('tc'),jb=$('jb'),jk=$('jk');let jid=null,lid=null,ox=0,oy=0,lx=0,ly=0;
  const tb=(id,fn)=>{const e=$(id);e.addEventListener('touchstart',ev=>{ev.preventDefault();ev.stopPropagation();fn(e)},{passive:false})};
- tb('bS',e=>{TC.b=TC.b?0:1;e.classList.toggle('on',!!TC.b);TC.sp=TC.b});
+ (function(){
+  const e=$('bS');
+  const runOn=ev=>{ev.preventDefault();ev.stopPropagation();TC.b=1;TC.sp=1;e.classList.add('on')};
+  const runOff=ev=>{if(ev){ev.preventDefault();ev.stopPropagation()}TC.b=0;TC.sp=0;e.classList.remove('on')};
+  e.addEventListener('touchstart',runOn,{passive:false});
+  e.addEventListener('touchend',runOff,{passive:false});
+  e.addEventListener('touchcancel',runOff,{passive:false});
+  // if finger slides off button, also release
+  e.addEventListener('touchmove',ev=>{
+   const t=ev.changedTouches[0];if(!t)return;
+   const r=e.getBoundingClientRect();
+   if(t.clientX<r.left||t.clientX>r.right||t.clientY<r.top||t.clientY>r.bottom)runOff(ev);
+  },{passive:false});
+ })();
  tb('bC',e=>{keys.KeyC=!keys.KeyC;e.classList.toggle('on',!!keys.KeyC)});
  tb('bF',e=>{if(playing){me.flash=!me.flash;beep(1200,.04,.1,'square');e.classList.toggle('on',!!me.flash)}});
  
- tb('bT',()=>{const ci=$('ci');
- if(!typing){typing=true;ci.style.display='block';setTimeout(()=>ci.focus(),50)}
- else{const v=ci.value.trim();if(v){chat(name,v);send({t:'chat',n:name,m:v});ci.value='';ci.focus()}
- else{ci.style.display='none';typing=false;ci.blur()}}
-});
-$('ci').addEventListener('keydown',e=>{
- if(e.key==='Enter'||e.keyCode===13){e.preventDefault();e.stopPropagation();
-  const v=$('ci').value.trim();
-  if(v){chat(name,v);send({t:'chat',n:name,m:v});$('ci').value='';
-   if(!TOUCH){$('ci').style.display='none';typing=false;$('ci').blur();if(playing)R.domElement.requestPointerLock()}
-   else{$('ci').focus()}}
+ (function(){
+ const ci=$('ci');
+ function sendChat(){
+  const v=ci.value.trim();
+  if(!v)return false;
+  chat(name,v);send({t:'chat',n:name,m:v});ci.value='';
+  return true;
  }
-});
-$('ci').addEventListener('blur',()=>{
- if(TOUCH&&typing&&!$('ci').value.trim()){setTimeout(()=>{if(document.activeElement!==$('ci')){typing=false;$('ci').style.display='none'}},200)}
-});
+ function openChat(){
+  typing=true;ci.style.display='block';
+  setTimeout(()=>{try{ci.focus();ci.click()}catch(e){}},30);
+ }
+ function closeChat(){
+  typing=false;ci.style.display='none';ci.value='';try{ci.blur()}catch(e){}
+  if(!TOUCH&&playing)try{R.domElement.requestPointerLock()}catch(e){}
+ }
+ tb('bT',()=>{
+  if(!typing)openChat();
+  else{if(sendChat()){if(TOUCH)setTimeout(()=>ci.focus(),30);else closeChat()}else closeChat()}
+ });
+ function onEnter(e){
+  if(!(e.key==='Enter'||e.keyCode===13||e.key==='Go'||e.key==='Send'))return;
+  e.preventDefault();e.stopPropagation();
+  if(!typing)return;
+  if(sendChat()){if(TOUCH)setTimeout(()=>{try{ci.focus()}catch(err){}},30);else closeChat()}
+ }
+ ci.addEventListener('keydown',onEnter);
+ ci.addEventListener('keyup',e=>{if(e.key==='Enter'||e.keyCode===13){e.preventDefault();e.stopPropagation()}});
+ ci.addEventListener('keypress',e=>{if(e.key==='Enter'||e.keyCode===13){e.preventDefault();onEnter(e)}});
+ // Android sometimes fires this
+ ci.addEventListener('change',()=>{});
+ ci.addEventListener('blur',()=>{
+  if(TOUCH&&typing){setTimeout(()=>{if(document.activeElement!==ci){if(!ci.value.trim())closeChat()}},300)}
+ });
+ // also catch Enter at document level while typing on mobile
+ document.addEventListener('keydown',e=>{
+  if(!typing||!TOUCH)return;
+  if(e.key==='Enter'||e.keyCode===13){e.preventDefault();e.stopPropagation();onEnter(e)}
+ },true);
+})();
  z.addEventListener('touchstart',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.clientX<innerWidth*.45&&jid==null){jid=t.identifier;ox=t.clientX;oy=t.clientY;jb.style.display='block';$('jh').style.display='none';jb.style.left=ox+'px';jb.style.top=oy+'px';jk.style.transform='none'}else if(lid==null){lid=t.identifier;lx=t.clientX;ly=t.clientY}}},{passive:false});
- z.addEventListener('touchmove',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.identifier==jid){let dx=t.clientX-ox,dy=t.clientY-oy;const m=Math.hypot(dx,dy),R0=55;if(m>R0){dx*=R0/m;dy*=R0/m}const k=Math.min(1,m/R0);TC.f=k>.2?-dy/R0:0;TC.s=k>.2?dx/R0:0;jk.style.transform='translate('+dx+'px,'+dy+'px)';TC.sp=TC.b||k>.95?1:0}
+ z.addEventListener('touchmove',ev=>{ev.preventDefault();for(const t of ev.changedTouches){if(t.identifier==jid){let dx=t.clientX-ox,dy=t.clientY-oy;const m=Math.hypot(dx,dy),R0=55;if(m>R0){dx*=R0/m;dy*=R0/m}const k=Math.min(1,m/R0);TC.f=k>.2?-dy/R0:0;TC.s=k>.2?dx/R0:0;jk.style.transform='translate('+dx+'px,'+dy+'px)';TC.sp=TC.b||k>.98?1:0}
   else if(t.identifier==lid&&playing){me.ry-=(t.clientX-lx)*.006*set.sens;me.pitch=clamp(me.pitch-(t.clientY-ly)*.006*set.sens,-1.4,1.4);lx=t.clientX;ly=t.clientY}}},{passive:false});
- const tend=ev=>{for(const t of ev.changedTouches){if(t.identifier==jid){jid=null;TC.f=TC.s=0;TC.sp=TC.b;jb.style.display='none';$('jh').style.display='block'}if(t.identifier==lid)lid=null}};
+ const tend=ev=>{for(const t of ev.changedTouches){if(t.identifier==jid){jid=null;TC.f=TC.s=0;TC.sp=TC.b?1:0;jb.style.display='none';$('jh').style.display='block'}if(t.identifier==lid)lid=null}};
  z.addEventListener('touchend',tend);z.addEventListener('touchcancel',tend);
  document.addEventListener('touchend',()=>{const e=document.documentElement;if(!document.fullscreenElement&&e.requestFullscreen)e.requestFullscreen().then(()=>{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{})}).catch(()=>{})},{once:true})}
 </script></body></html>
